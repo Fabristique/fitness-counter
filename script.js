@@ -1,24 +1,34 @@
-// ============================
-// DONNÉES COURANTES
-// ============================
+// ===============================
+// COMPTEURS ACTUELS
+// ===============================
 let counters = {
   pushups: 0,
   knees: 0,
   squats: 0,
-  baby: 0
+  baby: 0,
+  bikeMinutes: 0
 };
 
-// ============================
-// INCRÉMENT
-// ============================
+// ===============================
+// INCRÉMENTATION
+// ===============================
 function increment(type) {
   counters[type]++;
-  document.getElementById(type).textContent = counters[type];
+  updateUI();
 }
 
-// ============================
-// ENREGISTREMENT (SAFE)
-// ============================
+// ===============================
+// MISE À JOUR UI
+// ===============================
+function updateUI() {
+  for (let key in counters) {
+    document.getElementById(key).textContent = counters[key];
+  }
+}
+
+// ===============================
+// SAUVEGARDE SESSION
+// ===============================
 function saveSession() {
   const now = new Date();
 
@@ -28,38 +38,33 @@ function saveSession() {
     pushups: counters.pushups,
     knees: counters.knees,
     squats: counters.squats,
-    baby: counters.baby
+    baby: counters.baby,
+    bikeMinutes: counters.bikeMinutes
   };
 
-  const history =
-    JSON.parse(localStorage.getItem("fitnessHistory")) || [];
-
+  let history = JSON.parse(localStorage.getItem("fitnessHistory")) || [];
   history.push(entry);
-
-  // 🔒 clé UNIQUE et STABLE → données conservées même si le code change
   localStorage.setItem("fitnessHistory", JSON.stringify(history));
 
-  counters = { pushups: 0, knees: 0, squats: 0, baby: 0 };
+  counters = {
+    pushups: 0,
+    knees: 0,
+    squats: 0,
+    baby: 0,
+    bikeMinutes: 0
+  };
+
   updateUI();
   renderLog();
+  renderStats();
 }
 
-// ============================
-// UI
-// ============================
-function updateUI() {
-  Object.keys(counters).forEach(key => {
-    document.getElementById(key).textContent = counters[key];
-  });
-}
-
-// ============================
+// ===============================
 // JOURNAL
-// ============================
+// ===============================
 function renderLog() {
   const log = document.getElementById("log");
-  const history =
-    JSON.parse(localStorage.getItem("fitnessHistory")) || [];
+  const history = JSON.parse(localStorage.getItem("fitnessHistory")) || [];
 
   log.innerHTML = "";
 
@@ -67,19 +72,20 @@ function renderLog() {
     log.innerHTML += `
       <div>
         <strong>${e.date} – ${e.time}</strong><br>
-        💪 Pompes: ${e.pushups} |
-        🦵 Genoux: ${e.knees} |
-        🏋️ Squats: ${e.squats} |
-        🪑 Baby: ${e.baby}
+        💪 Pompes: ${e.pushups || 0} |
+        🦵 Genoux: ${e.knees || 0} |
+        🏋️ Squats: ${e.squats || 0} |
+        🪑 Baby: ${e.baby || 0} |
+        🚴 Vélo: ${e.bikeMinutes || 0} min
         <hr>
       </div>
     `;
   });
 }
 
-// ============================
+// ===============================
 // STATISTIQUES
-// ============================
+// ===============================
 function toggleStats() {
   const statsDiv = document.getElementById("stats");
   statsDiv.style.display =
@@ -92,25 +98,31 @@ function toggleStats() {
 
 function renderStats() {
   const statsDiv = document.getElementById("stats");
-  const history =
-    JSON.parse(localStorage.getItem("fitnessHistory")) || [];
+  const history = JSON.parse(localStorage.getItem("fitnessHistory")) || [];
 
   if (history.length === 0) {
     statsDiv.innerHTML = "<p>Aucune donnée enregistrée.</p>";
     return;
   }
 
-  // REGROUPEMENT PAR JOUR (SAFE)
   const daily = {};
 
   history.forEach(e => {
     if (!daily[e.date]) {
-      daily[e.date] = { pushups: 0, knees: 0, squats: 0, baby: 0 };
+      daily[e.date] = {
+        pushups: 0,
+        knees: 0,
+        squats: 0,
+        baby: 0,
+        bikeMinutes: 0
+      };
     }
+
     daily[e.date].pushups += e.pushups || 0;
     daily[e.date].knees += e.knees || 0;
     daily[e.date].squats += e.squats || 0;
     daily[e.date].baby += e.baby || 0;
+    daily[e.date].bikeMinutes += e.bikeMinutes || 0;
   });
 
   let html = `
@@ -122,6 +134,7 @@ function renderStats() {
         <th>🦵 Genoux</th>
         <th>🏋️ Squats</th>
         <th>🪑 Baby</th>
+        <th>🚴 Vélo (min)</th>
       </tr>
   `;
 
@@ -134,6 +147,7 @@ function renderStats() {
         <td>${d.knees}</td>
         <td>${d.squats}</td>
         <td>${d.baby}</td>
+        <td>${d.bikeMinutes}</td>
       </tr>
     `;
   });
@@ -142,7 +156,8 @@ function renderStats() {
   statsDiv.innerHTML = html;
 }
 
-// ============================
+// ===============================
 // INIT
-// ============================
+// ===============================
 renderLog();
+updateUI();
