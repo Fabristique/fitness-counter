@@ -14,7 +14,7 @@ h1 {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 15px;
-  max-width: 400px;
+  max-width: 450px;
   margin: auto;
 }
 
@@ -39,9 +39,9 @@ button:hover {
 }
 
 .save {
-  margin-top: 25px;
+  margin-top: 20px;
   width: 100%;
-  max-width: 400px;
+  max-width: 450px;
   background: #00c853;
   font-size: 22px;
 }
@@ -49,13 +49,13 @@ button:hover {
 .stats {
   margin-top: 10px;
   width: 100%;
-  max-width: 400px;
+  max-width: 450px;
   background: #2962ff;
   font-size: 20px;
 }
 
 #log, #stats {
-  max-width: 500px;
+  max-width: 600px;
   margin: 20px auto;
   text-align: left;
   background: #1c1c1c;
