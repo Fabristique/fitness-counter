@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Fitness Counter</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>🏋️ Fitness Counter</h1>
+
+<div class="counters">
+  <button onclick="increment('pushups')">💪 Pompes<br><span id="pushups">0</span></button>
+  <button onclick="increment('knees')">🦵 Pompes genoux<br><span id="knees">0</span></button>
+  <button onclick="increment('squats')">🏋️ Squats<br><span id="squats">0</span></button>
+  <button onclick="increment('baby')">🪑 Baby squats<br><span id="baby">0</span></button>
+</div>
+
+<button class="save" onclick="saveSession()">✅ Enregistrer la séance</button>
+
+<h2>📅 Journal</h2>
+<div id="log"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
